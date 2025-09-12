@@ -1,0 +1,16 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "",
+  "description": "",
+  "x-apple-developer-api-uri": "",
+  "x-apple-developer-api-version": "",
+  "type": "",
+  "required": [ "" ],
+  "properties": {
+    "": {
+      "description": "",
+      "type": "",
+      "$ref": ""
+    }
+  }
+}
