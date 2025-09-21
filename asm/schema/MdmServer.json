@@ -1,0 +1,30 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "x-apple-developer-api-uri": "https://developer.apple.com/documentation/appleschoolmanagerapi/mdmserver",
+  "title": "MdmServer",
+  "description": "The data structure that represents device management services in organizations.",
+  "type": "object",
+  "x-apple-developer-api-version": "1.1+",
+  "properties": {
+    "attributes": {
+      "type": "mdmserver.attributes",
+      "description": "The resource's attributes."
+    },
+    "id": {
+      "type": "string",
+      "description": "The opaque resource ID that uniquely identifies the resource."
+    },
+    "relationships": {
+      "type": "mdmserver.relationships",
+      "description": "Navigational links to related data and included resource types and IDs."
+    },
+    "type": {
+      "type": "string",
+      "description": "The resource type."
+    }
+  },
+  "required": [
+    "id",
+    "type"
+  ]
+}
