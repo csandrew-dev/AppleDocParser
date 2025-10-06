@@ -124,15 +124,16 @@ def main():
         if is_required:
             required.append(prop_name)
 
+    if required:
+        schema['required'] = required
+    else:
+        print("Required fields: NONE FOUND - skipping")
+    
     if properties:
         schema['properties'] = properties
     else:
         print("Properties: NOT FOUND - skipping")
         
-    if required:
-        schema['required'] = required
-    else:
-        print("Required fields: NONE FOUND - skipping")
 
     print("================================================================")
         
