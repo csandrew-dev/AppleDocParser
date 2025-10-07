@@ -11,24 +11,25 @@
   ],
   "properties": {
     "attributes": {
-      "type": "orgdevice.attributes",
-      "description": "The resource\u2019s attributes."
+      "description": "The resource\u2019s attributes.",
+      "$ref": "orgdevice.attributes.json"
     },
     "id": {
-      "type": "string",
-      "description": "The opaque resource ID that uniquely identifies the resource."
+      "description": "The opaque resource ID that uniquely identifies the resource.",
+      "type": "string"
     },
     "links": {
-      "type": "resourcelinks",
-      "description": "Navigational links that include the self-link."
+      "description": "Navigational links that include the self-link.",
+      "type": "resourcelinks"
     },
     "relationships": {
-      "type": "orgdevice.relationships",
-      "description": "Navigational links to related data and included resource types and IDs."
+      "description": "Navigational links to related data and included resource types and IDs.",
+      "$ref": "orgdevice.relationships.json"
     },
     "type": {
+      "description": "The resource type.",
       "type": "string",
-      "description": "The resource type."
+      "default": "orgdevices"
     }
   }
 }

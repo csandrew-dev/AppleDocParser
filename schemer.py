@@ -17,7 +17,7 @@ def main():
     # Use Selenium to fetch the documentation page with JS rendered
     driver = webdriver.Firefox()
     driver.get(url)
-    sleep(.05)
+    sleep(.5)
     html = driver.page_source
     soup = BeautifulSoup(html, 'html.parser')
     driver.quit()
@@ -85,15 +85,16 @@ def main():
 
         # Type inside class="property-metadata property-type"
         type_tag = symbol_col.find(class_="property-metadata property-type")
-        prop_type = type_tag.text.strip().lower() if type_tag else "string"
-
-        # Default value inside class="property-metadata" (if present)
-        default_tag = symbol_col.find(class_="property-metadata")
-        default_value = None
-        if default_tag and "default" in default_tag.text.lower():
-            match = re.search(r'Default:\s*([^\s]+)', default_tag.text)
-            if match:
-                default_value = match.group(1)
+        prop_type = type_tag.text.strip().lower() if type_tag else ""
+       
+        # Check if type is uri-reference, that should be described as type: string, format: uri-reference
+        if "uri-reference" in prop_type:
+            prop_type = "string"
+            format = "uri-reference" 
+        else:
+            format = ""
+        
+        
 
         # Requirement and Description inside class="col param-content large-9 small-12"
         content_col = section.find(class_="col param-content large-9 small-12")
@@ -113,11 +114,30 @@ def main():
                 # Sometimes the type is in this field if no description
                 description = content_col.text.strip()
 
+            # Default Value is inside this div/class
+            # Default value inside class="property-metadata" (if present)
+            default_value = None
+            default_tag = content_col.find(class_="property-metadata")
+            if default_tag and "value" in default_tag.text.lower():
+                default_value = default_tag.text.lower()
+                default_value = default_value[8:] #this parses out the " Value: " part of the text
+
         # Build property schema
-        prop_schema = {"type": prop_type}
+        prop_schema = {}
         if description:
             prop_schema["description"] = description
-        if default_value is not None:
+       
+        # Check if property type is linked to another object or not
+        if "." in prop_type:
+            prop_type += ".json"
+            prop_schema["$ref"] = prop_type
+        else:
+            prop_schema["type"] = prop_type
+        
+        if format:
+            prop_schema["format"] = format
+
+        if default_value:
             prop_schema["default"] = default_value
 
         properties[prop_name] = prop_schema
@@ -142,10 +162,14 @@ def main():
     # Create the output directory if it doesn't exist
     os.makedirs(output_dir, exist_ok=True)
     filename = title_tag.text if title_tag else "UnknownSchema"
-    output_file = os.path.join(output_dir, f'{filename}.json')
-    with open(output_file, 'w') as f:
-        json.dump(schema, f, indent=2)
-    print(f"Schema generated and saved to {output_file}")
+    if title_tag:
+        filename = title_tag.text
+        output_file = os.path.join(output_dir, f'{filename}.json')
+        with open(output_file, 'w') as f:
+            json.dump(schema, f, indent=2)
+        print(f"Schema generated and saved to {output_file}")
+    else:
+        print("Couldn't load page and/or parse data, not writing file.")
 
 if __name__ == "__main__":
     main()
